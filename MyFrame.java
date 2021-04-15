@@ -11,8 +11,7 @@ import java.io.IOException;
 
 public class MyFrame extends JFrame implements ActionListener {
 
-    JButton stageButton;
-    JButton commitButton;
+    JButton submitButton;
     JTextField textField1;
     JTextField textField2;
 
@@ -20,68 +19,63 @@ public class MyFrame extends JFrame implements ActionListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new FlowLayout());
 
-        stageButton = new JButton("Stage");
-        stageButton.addActionListener(this);
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(this);
 
-        commitButton = new JButton("Commit");
-        commitButton.addActionListener(this);
-
-        textField1 = new JTextField("repositories/day_planner");
+        textField1 = new JTextField();
         textField1.setPreferredSize(new Dimension(250, 40));
-        textField2 = new JTextField("added something");
+        textField2 = new JTextField();
         textField2.setPreferredSize(new Dimension(250, 40));
 
-        this.add(stageButton);
+        this.add(submitButton);
         this.add(textField1);
-        this.add(commitButton);
         this.add(textField2);
         this.pack();
         this.setVisible(true);
     }
 
-    
+    Process p = null;
+
     @Override
     public void actionPerformed(ActionEvent e) {
         File dir = new File("/Users/jacoblovins/Desktop/" + textField1.getText());
-        if (e.getSource() == stageButton) {
-            // String command = "cd /Users/jacoblovins/Desktop/" + textField1.getText() + "
-            // && git add -A";
+        String[] stageCommand = { "git", "add", "-A" };
+        String[] commitCommand = { "git", "commit", "-m", textField2.getText() };
+        String[] pushCommand = { "git", "push", "origin", "master" };
+
+        if (e.getSource() == submitButton) {
             System.out.println(dir);
 
+            ProcessBuilder stage = new ProcessBuilder(stageCommand);
+            stage.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+
+            ProcessBuilder commit = new ProcessBuilder(commitCommand);
+            commit.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+
+            ProcessBuilder push = new ProcessBuilder(pushCommand);
+            push.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+
             try {
-                Process stage = Runtime.getRuntime().exec("git add -A", null, dir);
-
-                int exitVal1 = stage.waitFor();
-                if (exitVal1 == 0) {
-                    System.out.println("Successfully Staged");
-                    // System.exit(0);
-                } else {
-                    System.out.println("something went wrong in staging!");
-                }
-
+                p = stage.start();
+                p.waitFor();
+                p = commit.start();
+                p.waitFor();
+                p = push.start();
             } catch (IOException e1) {
                 e1.printStackTrace();
-            } catch (InterruptedException e2) {
-                e2.printStackTrace();
-            }
-        } else if (e.getSource() == commitButton) {
-            try {
-                Process commit = Runtime.getRuntime().exec("git commit -m \"added something\"", null, dir);
-
-                int exitVal = commit.waitFor();
-                if (exitVal == 0) {
-                    System.out.println("Successfully committed");
-                    // System.exit(0);
-                } else {
-                    System.out.println(exitVal);
-                    System.out.println("something went wrong in committing!");
-                }
-
-            } catch (IOException e1) {
+            } catch (InterruptedException e1) {
                 e1.printStackTrace();
-            } catch (InterruptedException e2) {
-                e2.printStackTrace();
             }
-        }
+        } 
+        // else if (e.getSource() == pushButton) {
+        //     ProcessBuilder push = new ProcessBuilder(pushCommand);
+        //     push.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+
+        //     try {
+        //         p = push.start();
+        //     } catch (IOException e1) {
+        //         e1.printStackTrace();
+        //     }
+        // }
     }
 }
