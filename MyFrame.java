@@ -1,5 +1,6 @@
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import java.awt.Dimension;
@@ -15,14 +16,21 @@ public class MyFrame extends JFrame implements ActionListener {
     JTextField textField1;
     JTextField textField2;
     JTextField textField3;
+    JLabel repoLabel;
+    JLabel messageLabel;
+    JLabel branchLabel;
 
     MyFrame() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new FlowLayout());
+        this.setTitle("Git Automation");
 
         submitButton = new JButton("Submit");
         submitButton.addActionListener(this);
 
+        repoLabel = new JLabel("Repo Path:");
+        messageLabel = new JLabel("Commit Message:");
+        branchLabel = new JLabel("Branch:");
         textField1 = new JTextField();
         textField1.setPreferredSize(new Dimension(250, 40));
         textField2 = new JTextField();
@@ -30,10 +38,13 @@ public class MyFrame extends JFrame implements ActionListener {
         textField3 = new JTextField();
         textField3.setPreferredSize(new Dimension(250, 40));
 
-        this.add(submitButton);
+        this.add(repoLabel);
         this.add(textField1);
+        this.add(messageLabel);
         this.add(textField2);
+        this.add(branchLabel);
         this.add(textField3);
+        this.add(submitButton);
         this.pack();
         this.setVisible(true);
     }
@@ -71,15 +82,5 @@ public class MyFrame extends JFrame implements ActionListener {
                 e1.printStackTrace();
             }
         } 
-        // else if (e.getSource() == pushButton) {
-        //     ProcessBuilder push = new ProcessBuilder(pushCommand);
-        //     push.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
-
-        //     try {
-        //         p = push.start();
-        //     } catch (IOException e1) {
-        //         e1.printStackTrace();
-        //     }
-        // }
     }
 }
