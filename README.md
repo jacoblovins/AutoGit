@@ -1,4 +1,4 @@
-# GitAuto
+# AutoGit
 
 Java application that automates Git and Github. 
 
