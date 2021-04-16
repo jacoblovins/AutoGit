@@ -9,3 +9,4 @@ Java application that automates Git and Github.
 5. Leave GitAuto running in the background and the next time you have to commit, just enter your message and click submit!
 
 
+ 
