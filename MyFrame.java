@@ -1,7 +1,3 @@
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -10,40 +6,53 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+
 public class MyFrame extends JFrame implements ActionListener {
 
-    JButton submitButton;
-    JTextField textField1;
-    JTextField textField2;
-    JTextField textField3;
-    JLabel repoLabel;
-    JLabel messageLabel;
+	JLabel repoLabel;
+    JTextField repoText;
     JLabel branchLabel;
+    JTextField branchText;
+    JLabel commitLabel;
+    JTextField commitText;
+    JButton submitButton;
+    JLabel status;
+    int count = 0;
 
     MyFrame() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLayout(new FlowLayout());
         this.setTitle("Git Automation");
 
-        submitButton = new JButton("Submit");
-        submitButton.addActionListener(this);
 
         repoLabel = new JLabel("Repo Path:");
-        messageLabel = new JLabel("Commit Message:");
+        repoText = new JTextField();
+        repoText.setPreferredSize(new Dimension(250, 40));
+        
         branchLabel = new JLabel("Branch:");
-        textField1 = new JTextField();
-        textField1.setPreferredSize(new Dimension(250, 40));
-        textField2 = new JTextField();
-        textField2.setPreferredSize(new Dimension(250, 40));
-        textField3 = new JTextField();
-        textField3.setPreferredSize(new Dimension(250, 40));
+        branchText = new JTextField();
+        branchText.setPreferredSize(new Dimension(250, 40));
+        
+        commitLabel = new JLabel("Commit Message:");
+        commitText = new JTextField();
+        commitText.setPreferredSize(new Dimension(250, 40));
+        
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(this);
+        
+        status = new JLabel();
 
         this.add(repoLabel);
-        this.add(textField1);
-        this.add(messageLabel);
-        this.add(textField2);
+        this.add(repoText);
         this.add(branchLabel);
-        this.add(textField3);
+        this.add(branchText);
+        this.add(commitLabel);
+        this.add(commitText);
         this.add(submitButton);
         this.pack();
         this.setVisible(true);
@@ -53,22 +62,22 @@ public class MyFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        File dir = new File("/Users/jacoblovins/Desktop/" + textField1.getText());
+        File dir = new File("/Users/jacoblovins/Desktop/" + repoText.getText());
         String[] stageCommand = { "git", "add", "-A" };
-        String[] commitCommand = { "git", "commit", "-m", textField2.getText()};
-        String[] pushCommand = { "git", "push", "origin", textField3.getText()};
+        String[] commitCommand = { "git", "commit", "-m", commitText.getText()};
+        String[] pushCommand = { "git", "push", "origin", branchText.getText()};
 
         if (e.getSource() == submitButton) {
             System.out.println(dir);
 
             ProcessBuilder stage = new ProcessBuilder(stageCommand);
-            stage.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+            stage.directory(new File("/Users/jacoblovins/Desktop/" + repoText.getText()));
 
             ProcessBuilder commit = new ProcessBuilder(commitCommand);
-            commit.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+            commit.directory(new File("/Users/jacoblovins/Desktop/" + repoText.getText()));
 
             ProcessBuilder push = new ProcessBuilder(pushCommand);
-            push.directory(new File("/Users/jacoblovins/Desktop/" + textField1.getText()));
+            push.directory(new File("/Users/jacoblovins/Desktop/" + repoText.getText()));
 
             try {
                 p = stage.start();
@@ -81,6 +90,13 @@ public class MyFrame extends JFrame implements ActionListener {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
+            
+            count++;
+            status.setText("Changes Pushed: " + count);
+            commitText.setText("");
+            this.add(status);
+            this.pack();
         } 
     }
 }
+
